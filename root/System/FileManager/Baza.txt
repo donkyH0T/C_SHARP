@@ -1,7 +1,8 @@
-Discord  16.05.2022 21:26:12
-Discord  16.05.2022 21:26:08
-Discord  16.05.2022 21:26:08
-Discord  16.05.2022 21:26:08
-ScriptedSandbox64  16.05.2022 21:25:46
-Discord  16.05.2022 21:26:10
-Discord  16.05.2022 21:26:09
+notepad++  22.05.2022 17:38:56
+audiodg  22.05.2022 17:39:08
+Teams  22.05.2022 17:38:53
+RuntimeBroker  22.05.2022 17:39:05
+smartscreen  22.05.2022 17:38:56
+RuntimeBroker  22.05.2022 17:39:08
+ScriptedSandbox64  22.05.2022 17:38:09
+backgroundTaskHost  22.05.2022 17:39:05

@@ -7,6 +7,7 @@ namespace FileManager
 {
     public partial class Form3 : Form
     {
+
         public string last = "";
         public string action;
         public string tmp;
@@ -17,6 +18,7 @@ namespace FileManager
 
         public Form3()
         {
+            //this.FormBorderStyle = FormBorderStyle.FixedSingle;
             InitializeComponent();
             richTextBox1.AppendText(disktop + ">");
         }

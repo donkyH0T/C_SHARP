@@ -1,0 +1,16 @@
+C:\Users\pro7eg\Desktop\root\System\Form2\Form2\bin\Release\netcoreapp3.1\Form2.exe
+C:\Users\pro7eg\Desktop\root\System\Form2\Form2\bin\Release\netcoreapp3.1\Form2.deps.json
+C:\Users\pro7eg\Desktop\root\System\Form2\Form2\bin\Release\netcoreapp3.1\Form2.runtimeconfig.json
+C:\Users\pro7eg\Desktop\root\System\Form2\Form2\bin\Release\netcoreapp3.1\Form2.runtimeconfig.dev.json
+C:\Users\pro7eg\Desktop\root\System\Form2\Form2\bin\Release\netcoreapp3.1\Form2.dll
+C:\Users\pro7eg\Desktop\root\System\Form2\Form2\bin\Release\netcoreapp3.1\Form2.pdb
+C:\Users\pro7eg\Desktop\root\System\Form2\Form2\obj\Release\netcoreapp3.1\Form2.csproj.AssemblyReference.cache
+C:\Users\pro7eg\Desktop\root\System\Form2\Form2\obj\Release\netcoreapp3.1\Form2.Form1.resources
+C:\Users\pro7eg\Desktop\root\System\Form2\Form2\obj\Release\netcoreapp3.1\Form2.csproj.GenerateResource.cache
+C:\Users\pro7eg\Desktop\root\System\Form2\Form2\obj\Release\netcoreapp3.1\Form2.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\pro7eg\Desktop\root\System\Form2\Form2\obj\Release\netcoreapp3.1\Form2.AssemblyInfoInputs.cache
+C:\Users\pro7eg\Desktop\root\System\Form2\Form2\obj\Release\netcoreapp3.1\Form2.AssemblyInfo.cs
+C:\Users\pro7eg\Desktop\root\System\Form2\Form2\obj\Release\netcoreapp3.1\Form2.csproj.CoreCompileInputs.cache
+C:\Users\pro7eg\Desktop\root\System\Form2\Form2\obj\Release\netcoreapp3.1\Form2.dll
+C:\Users\pro7eg\Desktop\root\System\Form2\Form2\obj\Release\netcoreapp3.1\Form2.pdb
+C:\Users\pro7eg\Desktop\root\System\Form2\Form2\obj\Release\netcoreapp3.1\Form2.genruntimeconfig.cache

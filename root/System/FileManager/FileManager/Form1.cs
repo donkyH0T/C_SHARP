@@ -1,9 +1,13 @@
-﻿using System; 
+﻿using System;  
 using System.ComponentModel; 
-using System.Drawing; 
-using System.Windows.Forms; 
-using System.IO; 
 using System.Diagnostics; 
+using System.Drawing; 
+using System.IO;  
+using System.Management;
+using System.Text;
+using System.Threading;
+using System.Windows.Forms; 
+
 namespace FileManager
 {
     public partial class Form1 : Form
@@ -17,15 +21,62 @@ namespace FileManager
         private DateTime date = new DateTime();
         private Button button1;
         private string but="";
-        TextBox text;
-        Form form;
+        private Process form2;
+        private TextBox text;
+        private Form form;
+        private static FileStream fs,fss;
+        private Process[] processes;
+        EventWatcherOptions eventOptions;
+        string query = "SELECT * FROM" +
+               " __InstanceCreationEvent WITHIN 1 " +
+               "WHERE TargetInstance isa \"Win32_Process\"";
+        ManagementEventWatcher watcher;
         public Form1()
         {
-            
+            watcher =
+                new ManagementEventWatcher("root\\CIMV2", query, eventOptions);
+            watcher.EventArrived += new EventArrivedEventHandler(ProcessStartEvent);
+            watcher.Start();
+            //this.FormBorderStyle = FormBorderStyle.FixedSingle;
+            eventOptions = new
+                EventWatcherOptions
+            {
+                Timeout = System.TimeSpan.MaxValue
+            };
             InitializeComponent();
             saveFileDialog1.Filter = "Text File(*.txt)|*.txt";
             date = DateTime.Now;
+            timer1.Enabled = true;
+            fs= new FileStream(Path.Combine(FilePathDir, @"System\FileManager\Process.txt"), FileMode.Create, FileAccess.Write, FileShare.ReadWrite, 16, true);
+            fss = new FileStream(Path.Combine(FilePathDir, @"System\FileManager\ChangeDir.txt"), FileMode.Create, FileAccess.Write, FileShare.ReadWrite, 16, true);
+            Thread th = new Thread(new ThreadStart(CheckProc));
+            th.Start();
+            
         }
+
+        private static void ProcessStartEvent(object sender, EventArrivedEventArgs e)
+        {
+            ManagementBaseObject b = e.NewEvent;
+              string tmp = (((ManagementBaseObject)b["TargetInstance"])["Name"]).ToString();
+            tmp = tmp.Substring(0, tmp.LastIndexOf("."));
+            Process[] er = Process.GetProcessesByName(tmp);
+            foreach(var process in er)
+            {
+                using (PerformanceCounter ramCounter = new PerformanceCounter("Process", "Working Set", process.ProcessName))
+                {
+                    try
+                    {
+                        if (process.Id == 0 || process.Id == 4) continue;
+                        if (process.ProcessName == "ScriptedSandbox64" || process.ProcessName == "conhost" || process.ProcessName == "WmiPrvSE" || process.ProcessName == "conhost" || process.ProcessName == "svchost") continue;
+                        double ram = ramCounter.NextValue();
+                        string tpp = "Process: " + process.ProcessName + "  ID: " + process.Id + "  Ram: " + ram + "\n";
+                        AddText(fs, tpp);
+                    }
+                    catch (Exception) { }
+                }
+            }
+        }
+
 
         private void textBox1_TextChanged(object sender, EventArgs e)
         {
@@ -159,9 +210,12 @@ namespace FileManager
             using (StreamWriter Writer = new StreamWriter(Path.Combine(FilePathDir, @"System\FileManager\logi.txt")))
             {
 
-                Writer.WriteLine("");
+                Writer.Write("");
             }
+       
+            processes = new Process[50];
             listView1.AllowDrop = true;
+            //CheckProc();
         }
         private void listView1_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
         {
@@ -194,16 +248,18 @@ namespace FileManager
 
         private void взглянутьToolStripMenuItem_Click(object sender, EventArgs e)
         {
+           /* Form2 form2 = new Form2();
+            form2.Show();*/
             Form f;
             f = new Form();
-            f.Size = new Size(550, 550);
+            f.Size = new System.Drawing.Size(550, 550);
             f.Show();
             f.Activate();
             ListView q = new ListView();
             ImageList imageList = new ImageList();
             imageList.Images.Add(Image.FromFile(Path.Combine(FilePathDir, @"System\FileManager\пустая.png")));
             q.LargeImageList = imageList;
-            q.Size = new Size(500, 500);
+            q.Size = new System.Drawing.Size(500, 500);
             f.Controls.Add(q);
             Process[] proc = Process.GetProcesses();
             foreach (Process nam in proc)
@@ -324,8 +380,12 @@ namespace FileManager
                 Click.Show(MousePosition, ToolStripDropDownDirection.Right);
             }
         }
-        private void toolStripMenuItem2_Click(object sender, EventArgs e)
+        private void deleteclick()
         {
+            if (itempath == null)
+            {
+                return;
+            }
             if (itempath.EndsWith("System"))
             {
                 MessageBox.Show("НЕЛЬЗЯ");
@@ -339,7 +399,7 @@ namespace FileManager
                 {
                     File.Delete(s);
                 }
-                foreach(string s in kat)
+                foreach (string s in kat)
                 {
                     Directory.Delete(s, true);
                 }
@@ -347,12 +407,20 @@ namespace FileManager
             }
 
             listView1.Items.RemoveByKey(itempath);
-            
+
             if (Directory.Exists(itempath))
             {
-                string a= Path.Combine(FilePathDir, "Корзина") + @"\" + itempath.Substring(itempath.LastIndexOf(@"/") +1, itempath.Length - itempath.LastIndexOf(@"/") - 1);
+                string a = Path.Combine(FilePathDir, "Корзина") + @"\" + itempath.Substring(itempath.LastIndexOf(@"/") + 1, itempath.Length - itempath.LastIndexOf(@"/") - 1);
                 try { Directory.Move(itempath, a); }
-                catch (Exception) { Directory.Delete(itempath, true); }
+                catch (Exception)
+                {
+                    try
+                    {
+                        Directory.Delete(itempath, true);
+                    }
+                    catch (Exception) { }
+
+                }
             }
             if (File.Exists(itempath))
             {
@@ -360,13 +428,22 @@ namespace FileManager
                 try { File.Move(itempath, a); }
                 catch (Exception)
                 {
-                    File.Delete(itempath);
+                    try
+                    {
+                        File.Delete(itempath);
+                    }
+                    catch (Exception) { }
                 }
             }
+            Logirovanie(itempath, itempath, "удалён");
             goback();
             isFile = false;
             LoadButtonAction();
-            
+            itempath = null;
+        }
+        private void toolStripMenuItem2_Click(object sender, EventArgs e)
+        {
+            deleteclick();
         }
         private void listView1_ItemActivate(object sender, EventArgs e)
         {
@@ -384,8 +461,7 @@ namespace FileManager
         {
             CopyItem = itempath;
         }
-
-        private void вставитьToolStripMenuItem_Click(object sender, EventArgs e)
+        private void enter()
         {
             if (CopyItem == null)
             {
@@ -401,8 +477,8 @@ namespace FileManager
             if (System.IO.Directory.Exists(CopyItem))
             {
                 string[] files = System.IO.Directory.GetFiles(CopyItem);
-                string pathdir="";
-                if (Directory.Exists(Path.Combine(itempath,fileName)))
+                string pathdir = "";
+                if (Directory.Exists(Path.Combine(itempath, fileName)))
                 {
                     MessageBox.Show("Такая папка существует");
                 }
@@ -413,39 +489,68 @@ namespace FileManager
                 }
                 foreach (string s in files)
                 {
-                        System.IO.File.Copy(s, Path.Combine(pathdir, Path.GetFileName(s)), true);     
+                    System.IO.File.Copy(s, Path.Combine(pathdir, Path.GetFileName(s)), true);
                 }
                 CopyItem = null;
                 LoadButtonAction();
                 return;
             }
-            
+
             string destFile = System.IO.Path.Combine(targetPath, fileName);
             System.IO.File.Copy(CopyItem, destFile, true);
             CopyItem = null;
             LoadButtonAction();
+        }
+        private void вставитьToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            enter();
         }
         private void создатьФайлToolStripMenuItem_Click(object sender, EventArgs e)
         {
         }
         private void папкаToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            Logirovanie(FilePath+@"/папка", itempath, "создан");
             Directory.CreateDirectory(Path.Combine(FilePath,"папка"));
-            LoadButtonAction();   
+            
+            LoadButtonAction();
+            
         }
         private void notepadtxtToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            Logirovanie(FilePath+@"/Блокнот.txt", itempath, "создан");
             File.CreateText(Path.Combine(FilePath, "Блокнот.txt"));
+            
             LoadButtonAction();   
         }
-        public void Logirovanie(string pathToFile, string pathNextFile)
+        public void Logirovanie(string pathToFile, string pathNextFile,string file)
         {
             StreamWriter streamWriter = new StreamWriter(Path.Combine(FilePathDir, @"System\FileManager\logi.txt"), true);
-            
-            string text;
-            text = "Файл: " + pathToFile.Substring(pathToFile.LastIndexOf("/") + 1, pathToFile.Length - pathToFile.LastIndexOf(@"/") - 1) + " Переименован в: " + pathNextFile.Substring(pathNextFile.LastIndexOf(@"\") + 1, pathNextFile.Length - pathNextFile.LastIndexOf(@"\") - 1) + " Дата: "+DateTime.Now;
+            string text="";
+            if(file== "переименован")
+            {
+                text = "Файл: " + pathToFile.Substring(pathToFile.LastIndexOf("/") + 1, pathToFile.Length - pathToFile.LastIndexOf(@"/") - 1) + " " + file + " " + pathNextFile.Substring(pathNextFile.LastIndexOf(@"\") + 1, pathNextFile.Length - pathNextFile.LastIndexOf(@"\") - 1) + " Дата: " + DateTime.Now + " " + SystemInformation.UserName + " " + Environment.MachineName;
+            }
+            if(file== "перенесён")
+            {
+                text = "Файл: " + pathToFile.Substring(pathToFile.LastIndexOf("/") + 1, pathToFile.Length - pathToFile.LastIndexOf(@"/") - 1) + " " + file + " " + pathNextFile.Substring(0,pathNextFile.LastIndexOf(@"\")) + " Дата: " + DateTime.Now + " " + SystemInformation.UserName + " " + Environment.MachineName;
+            }
+            if (file == "удалён")
+            {
+                text="Файл"+" "+pathToFile+" "+" "+file+" "+ SystemInformation.UserName + " " + Environment.MachineName;
+            }
+            if (file == "создан")
+            {
+                text = "Файл" + " " + pathToFile + " " + " " + file + " " + SystemInformation.UserName + " " + Environment.MachineName;
+            }
             streamWriter.WriteLine(text);
             streamWriter.Close();
+        }
+        public void ChangeDir(string pathToFile,string pathNextFile)
+        {
+            string text;
+            text = "Файл: " + pathToFile.Substring(pathToFile.LastIndexOf("/") + 1, pathToFile.Length - pathToFile.LastIndexOf(@"/") - 1) + " Переименован в: " + pathNextFile.Substring(pathNextFile.LastIndexOf(@"\") + 1, pathNextFile.Length - pathNextFile.LastIndexOf(@"\") - 1) + " Дата: " + DateTime.Now;
+            CheckChangeDir(text);
         }
         private void button_Click(object sender, EventArgs e)
         {
@@ -461,15 +566,15 @@ namespace FileManager
                     if (File.Exists(itempath))
                     {
                         File.Move(itempath, pop);
-                        Logirovanie(itempath, pop);
+                        Logirovanie(itempath, pop,"переименован");
                         form.Close();
                     }
                     if (Directory.Exists(itempath))
                     {
                         File_Path_textbox.Text = FilePath;
-
                         Directory.Move(itempath, pop);
-                        Logirovanie(itempath, pop);
+                        Logirovanie(itempath, pop,"переименован");
+                        ChangeDir(itempath, pop);
                         form.Close();
                     }
                 }
@@ -478,11 +583,16 @@ namespace FileManager
                     form.Close();
                 }
                 isFile = false;
+                itempath = null;
                 LoadButtonAction();       
             }
         }
         private  void переименоватьToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (itempath == null)
+            {
+                return;
+            }
             if (itempath.EndsWith("System") || itempath.EndsWith("Корзина"))
             {
                 MessageBox.Show("Нельзя!");
@@ -495,16 +605,14 @@ namespace FileManager
             
             text.Text = "";
             form.StartPosition = FormStartPosition.CenterScreen;
-            form.Size = new Size(200,80);
+            form.Size = new System.Drawing.Size(200,80);
             button1 = new System.Windows.Forms.Button();
-            button1.Location = new Point(100, 0);
+            button1.Location = new System.Drawing.Point(100, 0);
             button1.Text = "Клик";
             button1.Click += new EventHandler(this.button_Click);
             form.Controls.Add(text);
             form.Controls.Add(button1);
             form.Show();
-           
-           
         }
 
         private void Click_Opening(object sender, CancelEventArgs e)
@@ -558,12 +666,41 @@ namespace FileManager
 
         private void menuStrip2_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
         {
+           
         }
-
-        private void работаСПроцессамиToolStripMenuItem_Click(object sender, EventArgs e)
+       
+        private  void работаСПроцессамиToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Form2 form = new Form2();
-            form.Show();
+           form2 = Process.Start(Path.Combine(FilePathDir, @"System\Form2\Form2\bin\Release\netcoreapp3.1\Form2.exe"));
+        }
+        private void CheckProc()
+        {
+            processes = Process.GetProcesses();
+            foreach (Process process in processes)
+                try
+                {
+                    using (PerformanceCounter ramCounter = new PerformanceCounter("Process", "Working Set", process.ProcessName))
+                    {
+                        if (process.ProcessName == "ScriptedSandbox64" || process.ProcessName == "conhost" || process.ProcessName == "WmiPrvSE" || process.ProcessName == "conhost" || process.ProcessName == "svchost") continue;
+                            double ram = ramCounter.NextValue();
+                            string tmp = "Process: " + process.ProcessName + "  ID: " + process.Id + "  Ram: " + ram + "\n";
+                            AddText(fs, tmp);   
+                    }
+                }
+                catch (Exception)
+                {
+
+                }
+        }
+        private static void AddText(FileStream fs, string value)
+        {
+            byte[] info = new UTF8Encoding(true).GetBytes(value);
+           fs.Write(info, 0, info.Length);
+            
+        }
+        private void CheckChangeDir(string text)
+        {
+            AddText(fss, text+"\n");
         }
 
         private void listView1_DragDrop(object sender, DragEventArgs e)
@@ -572,7 +709,7 @@ namespace FileManager
             {
                 return;
             }
-            Point pt = listView1.PointToClient(new Point(e.X, e.Y));
+            System.Drawing.Point pt = listView1.PointToClient(new System.Drawing.Point(e.X, e.Y));
             ListViewItem itemdrag = listView1.GetItemAt(pt.X, pt.Y);
             if (itemdrag == null)
             {
@@ -600,6 +737,7 @@ namespace FileManager
                         }
                         isFile = false;
                         File.Move(itempath, tmp);
+                        Logirovanie(itempath, tmp, "перенесён");
                         LoadButtonAction();
                         
                     }
@@ -621,6 +759,7 @@ namespace FileManager
                         }
                         goback();
                         Directory.Move(itempath, tmp);
+                        Logirovanie(itempath, tmp, "перенесён");
                         LoadButtonAction();
 
                     }
@@ -659,6 +798,62 @@ namespace FileManager
         }
         private void label3_Click(object sender, EventArgs e)
         {
+        }
+
+        private void МПвзаимодействиеToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+        private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
+        {
+            //CheckProc();
+        }
+
+
+        private void menuStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        {
+
+        }
+
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            try {
+
+                if (form2 != null)
+                {
+                    form2.CloseMainWindow();
+                }
+            }
+            catch (Exception) { }
+            
+        }
+
+        private void Form1_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyValue == (char)Keys.Enter)
+                LoadButtonAction();
+            if (e.KeyValue == (char)Keys.Escape)
+                Close();
+
+            if (e.KeyValue == (char)Keys.Delete)
+            {
+                deleteclick();
+            }
+
+            if (e.KeyValue == (char)Keys.C && e.Modifiers == Keys.Control)
+            {
+                CopyItem = itempath;
+            }
+
+            if (e.KeyValue == (char)Keys.V && e.Modifiers == Keys.Control)
+            {
+                enter();
+            }
+        }
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+               
         }
     }
 }

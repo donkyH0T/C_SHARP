@@ -21,7 +21,6 @@ C:\Users\pro7eg\Desktop\root\System\FileManager\FileManager\obj\Debug\FileManage
 C:\Users\pro7eg\Desktop\root\System\FileManager\FileManager\bin\Debug\DocumentFormat.OpenXml.dll
 C:\Users\pro7eg\Desktop\root\System\FileManager\FileManager\bin\Debug\DocumentFormat.OpenXml.xml
 C:\Users\pro7eg\Desktop\root\System\FileManager\FileManager\obj\Debug\FileManager.csproj.CopyComplete
-C:\Users\pro7eg\Desktop\root\System\FileManager\FileManager\obj\Debug\FileManager.Form2.resources
 C:\Users\pro7eg\Desktop\root\System\FileManager\FileManager\obj\Debug\FileManager.Form3.resources
 C:\Users\pro7eg\Desktop\Курсач\root\System\FileManager\FileManager\bin\Debug\FileManager.exe.config
 C:\Users\pro7eg\Desktop\Курсач\root\System\FileManager\FileManager\bin\Debug\FileManager.exe
@@ -30,7 +29,6 @@ C:\Users\pro7eg\Desktop\Курсач\root\System\FileManager\FileManager\bin\Deb
 C:\Users\pro7eg\Desktop\Курсач\root\System\FileManager\FileManager\bin\Debug\DocumentFormat.OpenXml.xml
 C:\Users\pro7eg\Desktop\Курсач\root\System\FileManager\FileManager\obj\Debug\FileManager.csproj.AssemblyReference.cache
 C:\Users\pro7eg\Desktop\Курсач\root\System\FileManager\FileManager\obj\Debug\FileManager.Form1.resources
-C:\Users\pro7eg\Desktop\Курсач\root\System\FileManager\FileManager\obj\Debug\FileManager.Form2.resources
 C:\Users\pro7eg\Desktop\Курсач\root\System\FileManager\FileManager\obj\Debug\FileManager.Form3.resources
 C:\Users\pro7eg\Desktop\Курсач\root\System\FileManager\FileManager\obj\Debug\FileManager.Properties.Resources.resources
 C:\Users\pro7eg\Desktop\Курсач\root\System\FileManager\FileManager\obj\Debug\FileManager.csproj.GenerateResource.cache
@@ -38,3 +36,24 @@ C:\Users\pro7eg\Desktop\Курсач\root\System\FileManager\FileManager\obj\Deb
 C:\Users\pro7eg\Desktop\Курсач\root\System\FileManager\FileManager\obj\Debug\FileManager.csproj.CopyComplete
 C:\Users\pro7eg\Desktop\Курсач\root\System\FileManager\FileManager\obj\Debug\FileManager.exe
 C:\Users\pro7eg\Desktop\Курсач\root\System\FileManager\FileManager\obj\Debug\FileManager.pdb
+C:\Users\pro7eg\Desktop\root\System\FileManager\FileManager\bin\Debug\System.CodeDom.dll
+C:\Users\pro7eg\Desktop\root\System\FileManager\FileManager\bin\Debug\System.CodeDom.xml
+D:\my files\js\oc\курсовая\last\root\System\FileManager\FileManager\bin\Debug\FileManager.exe.config
+D:\my files\js\oc\курсовая\last\root\System\FileManager\FileManager\bin\Debug\FileManager.exe
+D:\my files\js\oc\курсовая\last\root\System\FileManager\FileManager\bin\Debug\FileManager.pdb
+D:\my files\js\oc\курсовая\last\root\System\FileManager\FileManager\bin\Debug\DocumentFormat.OpenXml.dll
+D:\my files\js\oc\курсовая\last\root\System\FileManager\FileManager\bin\Debug\System.CodeDom.dll
+D:\my files\js\oc\курсовая\last\root\System\FileManager\FileManager\bin\Debug\DocumentFormat.OpenXml.xml
+D:\my files\js\oc\курсовая\last\root\System\FileManager\FileManager\bin\Debug\System.CodeDom.xml
+D:\my files\js\oc\курсовая\last\root\System\FileManager\FileManager\obj\Debug\FileManager.csprojAssemblyReference.cache
+D:\my files\js\oc\курсовая\last\root\System\FileManager\FileManager\obj\Debug\FileManager.Form1.resources
+D:\my files\js\oc\курсовая\last\root\System\FileManager\FileManager\obj\Debug\FileManager.Form3.resources
+D:\my files\js\oc\курсовая\last\root\System\FileManager\FileManager\obj\Debug\FileManager.Properties.Resources.resources
+D:\my files\js\oc\курсовая\last\root\System\FileManager\FileManager\obj\Debug\FileManager.csproj.GenerateResource.cache
+D:\my files\js\oc\курсовая\last\root\System\FileManager\FileManager\obj\Debug\FileManager.csproj.CoreCompileInputs.cache
+D:\my files\js\oc\курсовая\last\root\System\FileManager\FileManager\obj\Debug\FileManager.csproj.CopyComplete
+D:\my files\js\oc\курсовая\last\root\System\FileManager\FileManager\obj\Debug\FileManager.exe
+D:\my files\js\oc\курсовая\last\root\System\FileManager\FileManager\obj\Debug\FileManager.pdb
+C:\Users\pro7eg\Desktop\root\System\FileManager\FileManager\obj\Debug\FileManager.Form2.resources
+C:\Users\pro7eg\Desktop\Курсач\root\System\FileManager\FileManager\bin\Debug\System.CodeDom.dll
+C:\Users\pro7eg\Desktop\Курсач\root\System\FileManager\FileManager\bin\Debug\System.CodeDom.xml
